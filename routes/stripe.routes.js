@@ -7,7 +7,7 @@ router.post('/checkout', stripeController.checkout);
 router.get('/complete', stripeController.complete);
 
 router.get('/', (req, res) => {
-    res.render('index.ejs')
+    res.render('../views/index.ejs')
 })
 
 

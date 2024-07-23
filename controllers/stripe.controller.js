@@ -8,31 +8,23 @@ exports.checkout = async (req, res) => {
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: "mxn",
           product_data: {
-            name: "Node.js and Express book",
+            name: "Licencia de uso de plataforma",
           },
-          unit_amount: 50 * 100,
+          unit_amount: 1000 * 100,
         },
         quantity: 1,
       },
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: "JavaScript T-Shirt",
-          },
-          unit_amount: 20 * 100,
-        },
-        quantity: 2,
-      },
+
     ],
     mode: "payment",
     shipping_address_collection: {
-      allowed_countries: ["US", "BR"],
+      allowed_countries: ["MX"],
     },
-    success_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/cancel`,
+    success_url: `${process.env.BASE_URL}/api/v1/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.BASE_URL}/api/v1/stripe/cancel`,
+    locale: "es",
   });
 
   res.redirect(session.url);
@@ -47,5 +39,5 @@ exports.complete = async (req, res) => {
 
   console.log(JSON.stringify(await result))
 
-  res.send('Your payment was successful')
+  res.send('Subscripcion completada')
 }
