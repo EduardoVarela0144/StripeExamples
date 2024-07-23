@@ -1,10 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/user.routes');
-const roleRoutes = require("./routes/role.routes")
 const morgan = require('morgan');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
+const stripeRoutes = require('./routes/stripe.routes');
+
 const swaggerOptions = require('./swagger/swaggerOptions');
 
 require('dotenv').config();
@@ -14,10 +14,9 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors());
 
-// app.use('/api/v1/users', userRoutes);
-// app.use('/api/v1/roles', roleRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions))
+app.use('/api/v1/stripe', stripeRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
