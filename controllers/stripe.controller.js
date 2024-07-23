@@ -12,7 +12,7 @@ exports.checkout = async (req, res) => {
           product_data: {
             name: "Licencia de uso de plataforma",
           },
-          unit_amount: 1000 * 100,
+          unit_amount: 20000 * 100,
         },
         quantity: 1,
       },
@@ -30,6 +30,25 @@ exports.checkout = async (req, res) => {
   res.redirect(session.url);
 };
 
+
+exports.subscription = async (req, res) => {
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [{
+      price: 'price_1PfqaPDewdilSf5wQNZcq7MO',
+      quantity: 1,
+    }],
+    mode: 'subscription',
+    success_url: `${process.env.BASE_URL}/api/v1/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.BASE_URL}/api/v1/stripe/cancel`,
+  });
+
+  res.redirect(session.url);
+
+
+
+}
 
 exports.complete = async (req, res) => {
   const result = Promise.all([
