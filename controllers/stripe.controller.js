@@ -46,7 +46,7 @@ exports.subscription = async (req, res) => {
     cancel_url: `${process.env.BASE_URL}/api/stripe/cancel`,
   });
 
-  res.json({ id: session.url });
+  res.json({ url: session.url });
 
 }
 

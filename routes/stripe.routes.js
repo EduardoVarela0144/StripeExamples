@@ -15,6 +15,7 @@ const upload = multer();
 
 /**
 * @swagger
+
 * /stripe/single_payment:
 *   post:
 *     summary: Generar un pago unico.
@@ -26,6 +27,26 @@ const upload = multer();
 *         multipart/form-data:
 *           schema:
 *             $ref: '#/definitions/SinglePaymentInput'
+*     responses:
+*       200:
+*         description: Pago generado exitosamente.
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 url:
+*                   type: string
+*                   description: URL de la sesión de pago.
+
+* /stripe/subscription:
+*   post:
+*     summary: Hacer pago de una suscripción.
+*     description: Ejemplo de como generar un pago unico con Stripe.
+*     tags: [Stripe]
+*     responses:
+*       200:
+*         description: Pago generado exitosamente.
 */
 
 
@@ -43,5 +64,6 @@ const upload = multer();
 */
 
 router.post("/single_payment", upload.none(), stripeController.payment);
+router.post("/subscription", stripeController.subscription);
 
 module.exports = router;
