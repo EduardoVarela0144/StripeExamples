@@ -6,24 +6,15 @@ const options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "Pruebas Stripe",
+      title: "Billing XYZ API",
       version: "1.0.0",
-      description: "Guia de uso de la API de pruebas de Stripe",
+      description: "Guia de uso de la API de pruebas de Stripe y Paddle",
     },
     servers: [
       {
         url: `${process.env.BASE_URL}/api`,
       },
     ],
-    components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
   },
   apis: [path.join(process.cwd(), "/routes/*.routes.js")],
   security: [

@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const stripeRoutes = require("./routes/stripe.routes");
-
 const swaggerOptions = require("./swagger/swaggerOptions");
 
 require("dotenv").config();
@@ -14,10 +13,12 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(cors());
 
+app.use(express.urlencoded({ extended: true }));
+
 const apiPrefix = "/api";
 
 app.get("/", (req, res) => {
-  res.send("Bienvenido a la API de pruebas de Stripe");
+  res.send("Bienvenido a la API de pruebas de Stripe y Paddle");
 }
 );
 

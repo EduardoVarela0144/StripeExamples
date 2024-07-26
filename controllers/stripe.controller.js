@@ -3,6 +3,9 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.payment = async (req, res) => {
+
+  const amount = req.body.amount * 100;
+
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -11,7 +14,7 @@ exports.payment = async (req, res) => {
           product_data: {
             name: "Licencia de uso de plataforma",
           },
-          unit_amount: 20000 * 100,
+          unit_amount: amount,
         },
         quantity: 1,
       },
@@ -25,7 +28,8 @@ exports.payment = async (req, res) => {
     locale: "es",
   });
 
-  res.redirect(session.url);
+  res.status(200).json({ url: session.url });
+  
 };
 
 
@@ -42,7 +46,7 @@ exports.subscription = async (req, res) => {
     cancel_url: `${process.env.BASE_URL}/api/stripe/cancel`,
   });
 
-  res.redirect(session.url);
+  res.json({ id: session.url });
 
 }
 
