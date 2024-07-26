@@ -5,6 +5,7 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const stripeRoutes = require("./routes/stripe.routes");
 const swaggerOptions = require("./swagger/swaggerOptions");
+const errorHandler = require("./services/errorHandler");
 
 require("dotenv").config();
 
@@ -21,6 +22,9 @@ app.get("/", (req, res) => {
   res.send("Bienvenido a la API de pruebas de Stripe y Paddle");
 }
 );
+
+app.use(errorHandler);
+
 
 app.use(`${apiPrefix}/docs` , swaggerUi.serve, swaggerUi.setup(swaggerOptions));
 app.use(`${apiPrefix}/stripe`, stripeRoutes);

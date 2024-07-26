@@ -65,5 +65,6 @@ const upload = multer();
 
 router.post("/single_payment", upload.none(), stripeController.payment);
 router.post("/subscription", stripeController.subscription);
+router.get("/complete", stripeController.complete);
 
 module.exports = router;
