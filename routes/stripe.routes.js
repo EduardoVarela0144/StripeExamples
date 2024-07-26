@@ -26,18 +26,9 @@ const upload = multer();
 *         multipart/form-data:
 *           schema:
 *             $ref: '#/definitions/SinglePaymentInput'
-*     responses:
-*       200:
-*         description: Pago generado exitosamente.
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 url:
-*                   type: string
-*                   description: URL de la sesión de pago.
 */
+
+
 
 /**
 * @swagger
