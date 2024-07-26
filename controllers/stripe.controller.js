@@ -1,9 +1,8 @@
 require("dotenv").config();
-const express = require("express");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-exports.checkout = async (req, res) => {
+exports.payment = async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -22,8 +21,7 @@ exports.checkout = async (req, res) => {
     shipping_address_collection: {
       allowed_countries: ["MX"],
     },
-    success_url: `${process.env.BASE_URL}/api/v1/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/api/v1/stripe/cancel`,
+    success_url: `${process.env.BASE_URL}/api/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
     locale: "es",
   });
 
@@ -40,17 +38,16 @@ exports.subscription = async (req, res) => {
       quantity: 1,
     }],
     mode: 'subscription',
-    success_url: `${process.env.BASE_URL}/api/v1/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/api/v1/stripe/cancel`,
+    success_url: `${process.env.BASE_URL}/api/stripe/complete?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.BASE_URL}/api/stripe/cancel`,
   });
 
   res.redirect(session.url);
 
-
-
 }
 
 exports.complete = async (req, res) => {
+  
   const result = Promise.all([
     stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
     stripe.checkout.sessions.listLineItems(req.query.session_id)
@@ -58,5 +55,9 @@ exports.complete = async (req, res) => {
 
   console.log(JSON.stringify(await result))
 
-  res.send('Subscripcion completada')
+  res.send('Pago realizado correctamente'); 
+}
+
+exports.cancel = async (req, res) => {
+  res.send('Pago cancelado');
 }
