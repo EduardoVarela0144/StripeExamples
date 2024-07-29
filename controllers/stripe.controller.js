@@ -34,7 +34,7 @@ exports.payment = async (req, res, next) => {
 };
 
 
-exports.subscription = async (req, res) => {
+exports.subscription = async (req, res, next) => {
 
   try{
     const session = await stripe.checkout.sessions.create({
@@ -56,6 +56,82 @@ exports.subscription = async (req, res) => {
 
 }
 
+
+
+exports.createInvoice = async (req, res, next) => {
+  try{
+
+    const invoice = await stripe.invoices.create({
+      customer: req.body.customer,
+      collection_method: 'send_invoice',
+      days_until_due: 30,
+    });
+
+    res.json({ invoice });
+
+  }catch (error) {
+    next(error);
+  }
+}
+
+
+exports.addItemInvoice = async (req, res, next) => {
+  try{
+      
+    const invoiceItem = await stripe.invoiceItems.create({
+      customer: req.body.customer,
+      price: req.body.product,
+      invoice: req.body.invoice,
+    });
+
+    res.json({ invoiceItem });
+  
+    }catch (error) {
+      next(error);
+  }
+}
+
+exports.sendInvoice = async (req, res, next) => {
+  try{
+      
+    const invoice = await stripe.invoices.sendInvoice(req.body.invoice);
+
+    res.json({ invoice });
+  
+    }catch (error) {
+      next(error);
+  }
+}
+
+exports.attachSubscription = async (req, res, next) => {
+  try {
+    // Crear la suscripción
+    const subscription = await stripe.subscriptions.create({
+      customer: req.body.customer,
+      items: [{ price: req.body.product }],
+      expand: ['latest_invoice.payment_intent']
+    });
+
+    // Obtener el Payment Intent de la última factura
+    const invoice = subscription.latest_invoice;
+    const paymentIntent = invoice.payment_intent;
+
+    // Actualizar el Payment Intent con el método de pago OXXO
+    const updatedPaymentIntent = await stripe.paymentIntents.update(paymentIntent.id, {
+      payment_method_types: ['oxxo'],
+      payment_method_options: {
+        oxxo: {
+          expires_after_days: 3 // La cantidad de días después de los cuales expira el voucher OXXO
+        }
+      }
+    });
+
+    res.json({ subscription, paymentIntent: updatedPaymentIntent });
+  } catch (error) {
+    next(error);
+  }
+}
+
 exports.complete = async (req, res) => {
   
   const result = Promise.all([
@@ -63,11 +139,10 @@ exports.complete = async (req, res) => {
     stripe.checkout.sessions.listLineItems(req.query.session_id)
   ])
 
-  console.log(JSON.stringify(await result))
-
   res.send('Pago realizado correctamente'); 
 }
 
 exports.cancel = async (req, res) => {
   res.send('Pago cancelado');
 }
+
