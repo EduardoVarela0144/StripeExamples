@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const stripeController = require("../controllers/stripe.controller");
+const  stripeCustomerController = require("../controllers/stripe.customer.controller");
 const multer = require("multer");
 const upload = multer();
 
@@ -47,7 +48,37 @@ const upload = multer();
 *     responses:
 *       200:
 *         description: Pago generado exitosamente.
+
+
+ * /stripe/customer:
+ *   post:
+ *     summary: Crear un cliente.
+ *     description: Ejemplo de como crear un cliente con Stripe.
+ *     tags: [Stripe]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/definitions/CustomerInput'
+ *     responses:
+ *       200:
+ *         description: Cliente creado exitosamente.
+ *   get:
+ *     summary: Obtener todos los clientes.
+ *     description: Ejemplo de como obtener todos los clientes con Stripe.
+ *     tags: [Stripe]
+ *     responses:
+ *       200:
+ *         description: Clientes obtenidos exitosamente.
+ 
+
+
+
+
+
 */
+
 
 
 
@@ -61,10 +92,28 @@ const upload = multer();
 *     properties:
 *       amount:
 *         type: number
+
+*   CustomerInput:
+*     type: object
+*     required:
+*       - email
+*       - name
+*       - phone
+*     properties:
+*       email:
+*         type: string
+*       name:
+*         type: string
+*       phone:
+*         type: string
+
 */
 
 router.post("/single_payment", upload.none(), stripeController.payment);
 router.post("/subscription", stripeController.subscription);
 router.get("/complete", stripeController.complete);
+router.post("/customer", upload.none(),  stripeCustomerController.createCustomer);
+router.get("/customer", upload.none(),  stripeCustomerController.getCustomers);
+
 
 module.exports = router;
